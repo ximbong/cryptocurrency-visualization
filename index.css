@@ -59,7 +59,7 @@ a {
 }
 
 .buttons {
-  margin: 20px 10%;
+  padding: 20px 10%;
   display: flex;
   justify-content: space-between;
 }
@@ -91,4 +91,54 @@ a {
 
 .input>* {
   flex: 1;
+}
+
+@media (max-width:1300px) {
+  .buttons, .container {
+    padding: 20px 5%;
+  }
+}
+
+@media (max-width:1075px) {
+  .buttons, .container {
+    padding: 20px 15px;
+  }
+}
+
+@media (max-width:1000px) {
+  .container {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 30px;
+  }
+  .input {
+    width: 30%;
+  }
+}
+
+@media (max-width:740px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .buttons {
+    flex-direction: column;
+  }
+  .input {
+    margin-bottom: 20px;
+    width: 100%;
+    height: 40px;
+  }
+  .sort-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  .buttons button {
+    margin-left: 0;
+    padding: 10px;
+  }
+}
+
+@media (max-width:490px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
 }
