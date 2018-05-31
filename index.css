@@ -59,14 +59,15 @@ a {
 }
 
 .buttons {
-  margin: 20px;
+  margin: 20px 10%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .buttons button {
   padding: 10px 30px;
   border-radius: 3px;
+  margin-left: 20px;
 }
 
 .load-more {
@@ -79,4 +80,15 @@ a {
 .load-more:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.input {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+}
+
+.input>* {
+  flex: 1;
 }
