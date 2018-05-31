@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function(event) {
   let dataArray = [];
-  let index = 100;
+  let index = 100;  //index means the number of the elements on the page
+  const baseUrl = "https://api.coinmarketcap.com/v2/ticker/?limit=100&structure=array&sort=rank";
 
+  //render elements from an array
   const render = (arr) => {
     let stringHTML = '';
     for (let element of arr) {
@@ -39,11 +41,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
     document.querySelector(".container").innerHTML += stringHTML;
   }
 
+  //empty the div, set index to 100 (basic)
   const reset = () => {
     document.querySelector(".container").innerHTML = "";
     index = 100;
   }
 
+  //fetch data from a url, and push into dataArray
   const fetchFunction = (url) => {
     fetch(url).then(function(response) {
       return response.json()
@@ -52,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     })
   }
 
+  //sort with different criteria
   const handleSort = (criteria) => {
     if (criteria === 'price') {
       dataArray.sort(function(a, b) {
@@ -77,31 +82,51 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
     reset();
     render(dataArray.slice(0, 100))
+    document.querySelector('input').value = "";
   }
 
-  const baseUrl = "https://api.coinmarketcap.com/v2/ticker/?limit=100&structure=array&sort=rank";
+  //fetch first 100 coins when page loads
+  fetch(baseUrl).then(function(response) {
+    return response.json()
+  }).then(function(response) {
+    dataArray.push.apply(dataArray, response.data)
+    render(dataArray)
+  }).then(function(response) { //fetch the rest when page finish rendering
+    for (let i = 1; i < 16; i++) {
+      const url = baseUrl + `&start=${i * 100 + 1}`;
+      setTimeout(function() {
+        fetchFunction(url)
+      }, i * 100);
+    }
+  })
 
-  for (let i = 0; i < 16; i++) {
-    const url = baseUrl + `&start=${i * 100 + 1}`;
-    setTimeout(function() {
-      fetchFunction(url)
-    }, i * 100);
-  }
-
-  setTimeout(function() {
-    render(dataArray.slice(0, 100))
-  }, 1000);
-
-  console.log(dataArray)
   document.addEventListener('click', function(event) {
+
+    //if click on the load-more button
     if (event.target.classList.contains('load-more')) {
       render(dataArray.slice(index, index + 100))
       index += 100;
     }
 
+    //the target id has the same name with criteria name in handleSort declaration
     if (event.target.classList.contains('sort')) {
       handleSort(event.target.id);
     }
-  })
+  });
 
+  document.querySelector('input').addEventListener('keyup', function(event) {
+    let value = this.value;
+    if (value !== "") { //if value is not empty
+      let filterArray = dataArray.filter(function(element) {
+        return element.name.toLowerCase().includes(value.toLowerCase())
+      })
+      reset();
+      render(filterArray);
+      document.querySelector('.load-more').style.display = 'none';
+    } else { //if value is empty
+      reset();
+      render(dataArray.slice(0, 100))
+      document.querySelector('.load-more').style.display = 'flex';
+    }
+  })
 });
